@@ -2,10 +2,10 @@ var fs = require("fs");
 var path = require("path");
 
 function* walk(directory, maxDepth, yieldDirectories) {
-    yield* walkHelper(directory, maxDepth, 0, yieldDirectories);
+    yield* walkHelper(directory, maxDepth, yieldDirectories, 0);
 }
 
-function* walkHelper(directory, maxDepth, currentDepth, yieldDirectories) {
+function* walkHelper(directory, maxDepth, yieldDirectories, currentDepth) {
     if (currentDepth <= maxDepth) {
         for (var file of fs.readdirSync(directory)) {
             file = path.join(directory, file);
@@ -13,7 +13,7 @@ function* walkHelper(directory, maxDepth, currentDepth, yieldDirectories) {
                 if (yieldDirectories) {
                     yield file;
                 }
-                yield* walkHelper(file, maxDepth, currentDepth + 1);
+                yield* walkHelper(file, maxDepth, yieldDirectories, currentDepth + 1);
             }
             else {
                 yield file;
@@ -22,4 +22,4 @@ function* walkHelper(directory, maxDepth, currentDepth, yieldDirectories) {
     }
 }
 
-exports.walk = walk;
+module.exports = walk;
